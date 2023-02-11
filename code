@@ -1,0 +1,59 @@
+ Importing necessary libraries
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Load the dataset
+df = pd.read_csv("your_dataset.csv")
+
+# Step 2: Perform proper analysis of the dataset and draw conclusions based on your analysis.
+# Perform Exploratory Data Analysis
+print(df.describe())
+print(df.info())
+
+# Step 3: Build a Machine Learning Model to predict output based on the input column.
+# Split the data into training and testing sets
+X = df.drop('target_variable', axis=1)
+y = df['target_variable']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Fit the Linear Regression model
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = regressor.predict(X_test)
+
+# Step 4: Proper outlier detection and treatment
+# Handle outliers using techniques such as Winsorizing, capping or truncating
+# In this example, we will use Winsorizing
+# Calculate the lower and upper bounds
+lower_bound = X_train['column_name'].quantile(0.05)
+upper_bound = X_train['column_name'].quantile(0.95)
+
+# Winsorize the values outside the bounds
+X_train['column_name'] = np.where(X_train['column_name'] < lower_bound, lower_bound, X_train['column_name'])
+X_train['column_name'] = np.where(X_train['column_name'] > upper_bound, upper_bound, X_train['column_name'])
+
+# Step 5: Use appropriate evaluation metrics and compare all the models and write your observations i.e. why is one model better than the other?
+# Evaluate the model performance
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+r2 = r2_score(y_test, y_pred)
+print("Root Mean Squared Error:", rmse)
+print("R^2 Score:", r2)
+
+# Step 6: Bonus (max weightage) Build a Linear Regression model by performing appropriate feature engineering
+# Create new features by combining existing ones
+df['new_feature'] = df['feature_1'] * df['feature_2']
+
+# Fit the model with the new feature
+X = df.drop('target_variable', axis=1)
+y = df['target_variable']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = regressor.predict(X_test)
